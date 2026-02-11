@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Lemos Suporte</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+  box-sizing:border-box;
+  font-family:'Segoe UI',sans-serif;
+}
+
+body{
+  margin:0;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(212,175,55,0.08), transparent 40%),
+    radial-gradient(circle at 80% 100%, rgba(212,175,55,0.05), transparent 40%),
+    linear-gradient(135deg,#0f0f0f,#1a1a1a);
+  color:#fff;
+  scroll-behavior:smooth;
+}
+
+/* LOADER */
+#loader{
+  position:fixed;
+  width:100%;
+  height:100vh;
+  background:#0f0f0f;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+  transition:opacity .6s ease, visibility .6s;
+}
+
+.loader-logo{
+  font-size:32px;
+  font-weight:800;
+  letter-spacing:3px;
+  background:linear-gradient(90deg,#d4af37,#f5d777,#d4af37);
+  background-clip:text;
+  -webkit-background-clip:text;
+  color:transparent;
+  animation:pulse 1.5s infinite alternate;
+}
+
+@keyframes pulse{
+  from{opacity:.5; transform:scale(.95);}
+  to{opacity:1; transform:scale(1.05);}
+}
+
+/* HEADER */
+header{
+  text-align:center;
+  padding:70px 20px 40px;
+}
+
+.logo{
+  font-weight:800;
+  font-size:42px;
+  letter-spacing:3px;
+  text-align:center;
+}
+
+.logo .big{
+  font-size:58px;
+}
+
+.logo span:not(.sub){
+  background:linear-gradient(90deg,#d4af37,#f5d777,#d4af37);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.logo .sub{
+  display:block;
+  font-size:14px;
+  letter-spacing:4px;
+  color:#888;
+  margin-top:5px;
+}
+
+
+/* CONTAINER */
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+
+/* SECTION TITLE */
+.section-title{
+  margin:60px 0 25px;
+  font-size:20px;
+  color:#f5d777;
+  position:relative;
+}
+
+.section-title::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-8px;
+  width:60px;
+  height:2px;
+  background:#d4af37;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:20px;
+}
+
+/* CARD */
+.card{
+  background:rgba(255,255,255,0.03);
+  backdrop-filter:blur(10px);
+  border:1px solid rgba(212,175,55,0.15);
+  border-radius:18px;
+  padding:18px;
+  text-align:center;
+  transition:all .4s ease;
+}
+
+.card:hover{
+  transform:translateY(-8px);
+  border-color:#d4af37;
+  box-shadow:0 15px 30px rgba(0,0,0,0.6);
+}
+
+/* IMAGE */
+.card img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+
+/* TITLE */
+.card h3{
+  margin:10px 0 15px;
+  font-size:18px;
+  color:#f5d777;
+}
+
+/* BUTTON */
+button{
+  width:100%;
+  padding:12px;
+  background:linear-gradient(90deg,#d4af37,#f5d777);
+  color:#000;
+  border:none;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  transform:scale(1.03);
+  box-shadow:0 5px 15px rgba(212,175,55,0.4);
+}
+
+/* DESTAQUE */
+.destaque{
+  border:2px solid #d4af37;
+  box-shadow:0 0 30px rgba(212,175,55,0.2);
+}
+
+/* ANIMAÇÃO SUAVE */
+.fade-in{
+  opacity:0;
+  transform:translateY(30px);
+  transition:all .8s ease;
+}
+
+.fade-in.show{
+  opacity:1;
+  transform:translateY(0);
+}
+</style>
+</head>
+
+<body>
+
+<div id="loader">
+  <div class="loader-logo">LEMOS</div>
+</div>
+
+<header>
+<div class="logo">
+  <span class="big">L</span>emo<span class="big">S</span>
+  <span class="sub">SUPORTE</span>
+</div>
+
+
+
+</header>
+
+<div class="container">
+<div class="section-title">🛠 Serviços</div>
+<div class="grid">
+  <div class="card" onclick="pedido('Troca de Tela')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Troca de Tela</h3>
+    <button>Solicitar orçamento</button>
+  </div>
+
+  <div class="card" onclick="pedido('Troca de Bateria')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Troca de Bateria</h3>
+    <button>Solicitar orçamento</button>
+  </div>
+
+  <div class="card" onclick="pedido('Placa de Carga')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Placa de Carga</h3>
+    <button>Solicitar orçamento</button>
+  </div>
+</div>
+
+<div class="section-title">⭐ Mais Vendidos</div>
+<div class="grid">
+  <div class="card destaque" onclick="pedido('Capinha iPhone')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Capinha iPhone</h3>
+    <button>Consultar valor</button>
+  </div>
+
+  <div class="card destaque" onclick="pedido('Película 3D (Vidro)')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Película 3D</h3>
+    <button>Consultar valor</button>
+  </div>
+
+  <div class="card destaque" onclick="pedido('Power Bank')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Power Bank</h3>
+    <button>Consultar valor</button>
+  </div>
+</div>
+
+<div class="section-title">📱 Capinhas</div>
+<div class="grid">
+  <div class="card" onclick="pedido('Capinha Android')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Capinha Android</h3>
+    <button>Consultar valor</button>
+  </div>
+
+  <div class="card" onclick="pedido('Capinha iPhone')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Capinha iPhone</h3>
+    <button>Consultar valor</button>
+  </div>
+</div>
+
+<div class="section-title">🛡 Películas</div>
+<div class="grid">
+  <div class="card" onclick="pedido('Película 3D (Vidro)')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>3D (Vidro)</h3>
+    <button>Consultar valor</button>
+  </div>
+
+  <div class="card" onclick="pedido('Película Cerâmica')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Cerâmica</h3>
+    <button>Consultar valor</button>
+  </div>
+
+  <div class="card" onclick="pedido('Película Privacidade')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Privacidade</h3>
+    <button>Consultar valor</button>
+  </div>
+</div>
+
+<div class="section-title">🎧 Fones</div>
+<div class="grid">
+  <div class="card" onclick="pedido('Fone com fio')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Fone com fio</h3>
+    <button>Consultar valor</button>
+  </div>
+
+  <div class="card" onclick="pedido('Fone Bluetooth')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Fone Bluetooth</h3>
+    <button>Consultar valor</button>
+  </div>
+</div>
+
+<div class="section-title">🔌 Cabos</div>
+<div class="grid">
+  <div class="card" onclick="pedido('Cabo V8')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Cabo V8</h3>
+    <button>Consultar valor</button>
+  </div>
+
+  <div class="card" onclick="pedido('Cabo Tipo C')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Cabo Tipo C</h3>
+    <button>Consultar valor</button>
+  </div>
+
+  <div class="card" onclick="pedido('Cabo iPhone')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Cabo iPhone</h3>
+    <button>Consultar valor</button>
+  </div>
+</div>
+
+<div class="section-title">🔋📺 Outros Produtos</div>
+<div class="grid">
+  <div class="card" onclick="pedido('Power Bank')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Power Bank</h3>
+    <button>Consultar valor</button>
+  </div>
+
+  <div class="card" onclick="pedido('TV Box')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>TV Box</h3>
+    <button>Consultar valor</button>
+  </div>
+
+  <div class="card" onclick="pedido('Fire Stick')">
+    <img src="https://via.placeholder.com/300x200">
+    <h3>Fire Stick</h3>
+    <button>Consultar valor</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+
+// WHATSAPP
+function pedido(produto){
+  let msg="Olá! Tenho interesse no produto:%0A%0A"+produto;
+  window.open("https://wa.me/5561983662523?text="+msg,"_blank");
+}
+
+// LOADING
+window.addEventListener("load", function(){
+  const loader = document.getElementById("loader");
+  setTimeout(()=>{
+    loader.style.opacity="0";
+    loader.style.visibility="hidden";
+  },1200);
+});
+
+// ANIMAÇÃO AO ROLAR
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add("show");
+    }
+  });
+});
+
+document.querySelectorAll(".card, .section-title").forEach(el=>{
+  el.classList.add("fade-in");
+  observer.observe(el);
+});
+
+</script>
+
+</body>
+</html>
+
+
