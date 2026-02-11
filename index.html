@@ -5,6 +5,8 @@
 <title>Lemos Suporte</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<link rel="icon" type="image/png" href="imagens/faviconf-16x16.png">
+
 <style>
 *{
   box-sizing:border-box;
@@ -15,53 +17,19 @@ body{
   margin:0;
   background: radial-gradient(circle at 50% 20%, #2a2a2a 0%, #121212 40%, #0a0a0a 100%);
   color:#fff;
-  scroll-behavior:smooth;
-  position:relative;
   overflow-x:hidden;
-}
-
-
-
-/* LOADER */
-#loader{
-  position:fixed;
-  width:100%;
-  height:100vh;
-  background:#0f0f0f;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-  transition:opacity .6s ease, visibility .6s;
-}
-
-.loader-logo{
-  font-size:32px;
-  font-weight:800;
-  letter-spacing:3px;
-  background:linear-gradient(90deg,#d4af37,#f5d777,#d4af37);
-  background-clip:text;
-  -webkit-background-clip:text;
-  color:transparent;
-  animation:pulse 1.5s infinite alternate;
-}
-
-@keyframes pulse{
-  from{opacity:.5; transform:scale(.95);}
-  to{opacity:1; transform:scale(1.05);}
 }
 
 /* HEADER */
 header{
   text-align:center;
-  padding:70px 20px 40px;
+  padding:60px 20px 30px;
 }
 
 .logo{
   font-weight:800;
   font-size:42px;
   letter-spacing:3px;
-  text-align:center;
 }
 
 .logo .big{
@@ -72,6 +40,7 @@ header{
   background:linear-gradient(90deg,#d4af37,#f5d777,#d4af37);
   -webkit-background-clip:text;
   background-clip:text;
+  -webkit-text-fill-color:transparent;
   color:transparent;
 }
 
@@ -81,17 +50,62 @@ header{
   letter-spacing:4px;
   color:#888;
   margin-top:5px;
+  /* sublogo animada apenas no loader */
+}
+/* Loader: animação sutil de profundidade no carregamento */
+#loader{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,1);
+  z-index:9999;
 }
 
+.loader-inner{
+  text-align:center;
+}
+
+.loader-logo{
+  font-weight:900;
+  font-size:64px;
+  letter-spacing:4px;
+  background:linear-gradient(90deg,#d4af37,#f5d777,#d4af37);
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  color:transparent;
+  transform-style:preserve-3d;
+  animation:loader-appear 1400ms cubic-bezier(.2,.9,.2,1) forwards;
+}
+
+.loader-sub{
+  margin-top:8px;
+  color:#aaa;
+  font-size:14px;
+  opacity:0;
+  animation:loader-sub-appear 1400ms 300ms cubic-bezier(.2,.9,.2,1) forwards;
+}
+
+@keyframes loader-appear{
+  0%{opacity:0; transform:scale(.7) translateZ(-40px); filter:blur(6px)}
+  60%{opacity:1; transform:scale(1.02) translateZ(6px); filter:blur(0)}
+  100%{opacity:1; transform:scale(1) translateZ(0); filter:blur(0)}
+}
+
+@keyframes loader-sub-appear{
+  0%{opacity:0; transform:translateY(6px)}
+  100%{opacity:1; transform:translateY(0)}
+}
 
 /* CONTAINER */
 .container{
-  max-width:1100px;
+  max-width:1200px;
   margin:auto;
   padding:20px;
 }
 
-/* SECTION TITLE */
 .section-title{
   margin:60px 0 25px;
   font-size:20px;
@@ -112,313 +126,492 @@ header{
 /* GRID */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:20px;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:25px;
 }
 
 /* CARD */
 .card{
   background:rgba(255,255,255,0.03);
-  backdrop-filter:blur(10px);
   border:1px solid rgba(212,175,55,0.15);
   border-radius:18px;
   padding:18px;
   text-align:center;
-  transition:all .4s ease;
+  transition:.4s;
 }
 
 .card:hover{
-  transform:translateY(-8px);
+  transform:translateY(-6px);
   border-color:#d4af37;
-  box-shadow:0 15px 30px rgba(0,0,0,0.6);
+  box-shadow:0 10px 25px rgba(0,0,0,.6);
 }
 
-/* IMAGE */
+/* IMAGEM VERTICAL REAL */
 .card img{
   width:100%;
-  height:160px;
+  height:300px;
   object-fit:cover;
-  border-radius:12px;
+  border-radius:14px;
   margin-bottom:15px;
 }
 
-.card.vertical img{
-  height:260px;
-  object-fit:cover;
-}
-
-
-/* TITLE */
+/* TITULO */
 .card h3{
   margin:10px 0 15px;
-  font-size:18px;
   color:#f5d777;
 }
 
-/* BUTTON */
-button{
+/* INPUT DARK */
+.card input{
+  width:100%;
+  padding:10px;
+  margin-bottom:10px;
+  border-radius:8px;
+  border:1px solid rgba(212,175,55,0.3);
+  background:#111111;
+  color:#fff;
+  outline:none;
+}
+
+/* CONTADOR DE QUANTIDADE */
+.quantidade-box{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.quantidade-box button{
+  width:35px;
+  height:35px;
+  padding:0;
+  border-radius:6px;
+  background:#d4af37;
+  color:#000;
+  font-weight:bold;
+  border:none;
+  cursor:pointer;
+  transition:.2s;
+}
+
+.quantidade-box button:hover{
+  background:#f5d777;
+}
+
+.quantidade-box span{
+  min-width:30px;
+  text-align:center;
+  font-weight:bold;
+}
+
+/* BOTÕES */
+.card button{
   width:100%;
   padding:12px;
-  background:linear-gradient(90deg,#d4af37,#f5d777);
-  color:#000;
   border:none;
   border-radius:10px;
+  background:linear-gradient(90deg,#d4af37,#f5d777);
+  color:#000;
   font-weight:600;
   cursor:pointer;
   transition:.3s;
 }
 
-button:hover{
-  transform:scale(1.03);
-  box-shadow:0 5px 15px rgba(212,175,55,0.4);
+.card button:hover{
+  transform:scale(1.04);
 }
 
-/* DESTAQUE */
-.destaque{
-  border:2px solid #d4af37;
-  box-shadow:0 0 30px rgba(212,175,55,0.2);
-}
-
-/* ANIMAÇÃO SUAVE */
-.fade-in{
-  opacity:0;
-  transform:translateY(30px);
-  transition:all .8s ease;
-}
-
-.fade-in.show{
-  opacity:1;
-  transform:translateY(0);
-}
-
-.trust{
-  text-align:center;
-  color:#ccc;
+.card .btn-small{
+  width:auto;
+  padding:8px 16px;
   font-size:14px;
-  margin-top:10px;
-  letter-spacing:1px;
+  background:rgba(212,175,55,0.8);
 }
 
+.card .btn-small:hover{
+  transform:none;
+  background:#d4af37;
+}
 
-body::before{
-  content:"";
+/* BOTÃO REMOVER */
+.card .btn-remover{
+  width:auto;
+  padding:8px 16px;
+  font-size:14px;
+  background:rgba(212,175,55,0.8);
+  margin-top:8px;
+}
+
+.card .btn-remover:hover{
+  background:#d4af37;
+}
+
+.botoes-container{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+/* CARRINHO FIXO */
+.carrinho-box{
   position:fixed;
-  inset:0;
-  pointer-events:none;
-  background-image:
-    radial-gradient(3px 3px at 15% 20%, rgba(255,215,120,0.9), transparent),
-    radial-gradient(2px 2px at 25% 60%, rgba(255,215,120,0.8), transparent),
-    radial-gradient(2px 2px at 70% 30%, rgba(255,215,120,0.7), transparent),
-    radial-gradient(3px 3px at 85% 70%, rgba(255,215,120,0.9), transparent),
-    radial-gradient(2px 2px at 40% 80%, rgba(255,215,120,0.8), transparent),
-    radial-gradient(3px 3px at 60% 50%, rgba(255,215,120,0.7), transparent);
-  background-repeat:no-repeat;
-  animation:particlesMove 25s linear infinite;
-  opacity:0.8;
+  top:20px;
+  right:20px;
+  background:#111;
+  border:1px solid #d4af37;
+  padding:10px 15px;
+  border-radius:12px;
+  cursor:pointer;
+  z-index:999;
 }
 
-@keyframes particlesMove{
-  from{transform:translateY(0);}
-  to{transform:translateY(-60px);}
+.carrinho-box span{
+  color:#f5d777;
+  font-weight:bold;
 }
 
+.finalizar-btn{
+  margin:40px auto;
+  display:block;
+  padding:15px 30px;
+  font-size:18px;
+  border:none;
+  border-radius:12px;
+  background:#d4af37;
+  color:#000;
+  cursor:pointer;
+}
 
 </style>
 </head>
 
 <body>
 
+<div class="carrinho-box" onclick="finalizarPedido()">
+🛒 Carrinho (<span id="contador">0</span>)
+</div>
+
+<!-- LOADER (aparece ao entrar no site) -->
 <div id="loader">
-  <div class="loader-logo">LEMOS</div>
+  <div class="loader-inner">
+    <div class="loader-logo">
+      <span class="big">L</span>emo<span class="big">S</span>
+      <div class="sub">SUPORTE</div>
+    </div>
+    <div class="loader-sub">Carregando...</div>
+  </div>
 </div>
 
 <header>
 <div class="logo">
-  <span class="big">L</span>emo<span class="big">S</span>
-  <span class="sub">SUPORTE</span>
+<span class="big">L</span>emo<span class="big">S</span>
+<span class="sub">SUPORTE</span>
 </div>
-
-
-
 </header>
 
-<p class="trust">
-Garantia em todos os serviços • Atendimento rápido • Orçamento sem compromisso
-</p>
-
-
 <div class="container">
+
+<!-- SERVIÇOS -->
 <div class="section-title">🛠 Serviços</div>
 <div class="grid">
-  <div class="card" onclick="pedido('Troca de Tela')">
+  <div class="card">
     <img src="imagens/Display.jfif">
     <h3>Troca de Tela</h3>
-    <button>Solicitar orçamento</button>
+    <input type="text" placeholder="Modelo do celular" class="modelo-input">
+    <button onclick="enviarServico('Troca de Tela', this)">Enviar para WhatsApp</button>
   </div>
 
-  <div class="card" onclick="pedido('Troca de Bateria')">
+  <div class="card">
     <img src="imagens/Bateria.jfif">
     <h3>Troca de Bateria</h3>
-    <button>Solicitar orçamento</button>
+    <input type="text" placeholder="Modelo do celular" class="modelo-input">
+    <button onclick="enviarServico('Troca de Bateria', this)">Enviar para WhatsApp</button>
   </div>
 
-  <div class="card" onclick="pedido('Placa de Carga')">
+  <div class="card">
     <img src="imagens/Placa de Carga.jfif">
     <h3>Placa de Carga</h3>
-    <button>Solicitar orçamento</button>
+    <input type="text" placeholder="Modelo do celular" class="modelo-input">
+    <button onclick="enviarServico('Placa de Carga', this)">Enviar para WhatsApp</button>
   </div>
 </div>
 
-<div class="section-title">⭐ Mais Vendidos</div>
-<div class="grid">
-  <div class="card destaque" onclick="pedido('Capinha iPhone')">
-    <img src="imagens/capinha-iphone.jpg">
-    <h3>Capinha iPhone</h3>
-    <button>Consultar valor</button>
-  </div>
-
-  <div class="card destaque" onclick="pedido('Película 3D (Vidro)')">
-    <img src="imagens/pelicula.jpg">
-    <h3>Película 3D</h3>
-    <button>Consultar valor</button>
-  </div>
-
-  <div class="card destaque" onclick="pedido('Power Bank')">
-    <img src="imagens/power-bank.jpg">
-    <h3>Power Bank</h3>
-    <button>Consultar valor</button>
-  </div>
-</div>
-
+<!-- CAPINHAS -->
 <div class="section-title">📱 Capinhas</div>
 <div class="grid">
-  <div class="card vertical" onclick="pedido('Capinha Android')">
+
+  <div class="card">
     <img src="imagens/capinha-android.jpg">
     <h3>Capinha Android</h3>
-    <button>Consultar valor</button>
+    <input type="text" placeholder="Escolher cor">
+    <div class="botoes-container">
+      <button class="btn-small" onclick="addCarrinho('Capinha Android', this)">+ Adicionar</button>
+      <button class="btn-small btn-remover" onclick="removerCarrinho('Capinha Android', this)">- Remover</button>
+    </div>
   </div>
 
-  <div class="card vertical" onclick="pedido('Capinha iPhone')">
+  <div class="card">
     <img src="imagens/capinha-iphone.jpg">
     <h3>Capinha iPhone</h3>
-    <button>Consultar valor</button>
+    <input type="text" placeholder="Escolher cor">
+    <div class="botoes-container">
+      <button class="btn-small" onclick="addCarrinho('Capinha iPhone', this)">+ Adicionar</button>
+      <button class="btn-small btn-remover" onclick="removerCarrinho('Capinha iPhone', this)">- Remover</button>
+    </div>
   </div>
+
 </div>
 
+<!-- PELICULAS -->
 <div class="section-title">🛡 Películas</div>
 <div class="grid">
-  <div class="card vertical" onclick="pedido('Película 3D (Vidro)')">
+
+  <div class="card">
     <img src="imagens/pelicula.jpg">
     <h3>3D (Vidro)</h3>
-    <button>Consultar valor</button>
+    <div class="botoes-container">
+      <button class="btn-small" onclick="addCarrinho('Película 3D', this)">+ Adicionar</button>
+      <button class="btn-small btn-remover" onclick="removerCarrinho('Película 3D', this)">- Remover</button>
+    </div>
   </div>
 
-  <div class="card vertical" onclick="pedido('Película Cerâmica')">
+  <div class="card">
     <img src="imagens/pelicula.jpg">
     <h3>Cerâmica</h3>
-    <button>Consultar valor</button>
+    <div class="botoes-container">
+      <button class="btn-small" onclick="addCarrinho('Película Cerâmica', this)">+ Adicionar</button>
+      <button class="btn-small btn-remover" onclick="removerCarrinho('Película Cerâmica', this)">- Remover</button>
+    </div>
   </div>
 
-  <div class="card vertical" onclick="pedido('Película Privacidade')">
+  <div class="card">
     <img src="imagens/pelicula.jpg">
     <h3>Privacidade</h3>
-    <button>Consultar valor</button>
+    <div class="botoes-container">
+      <button class="btn-small" onclick="addCarrinho('Película Privacidade', this)">+ Adicionar</button>
+      <button class="btn-small btn-remover" onclick="removerCarrinho('Película Privacidade', this)">- Remover</button>
+    </div>
   </div>
+
 </div>
 
+<!-- FONES -->
 <div class="section-title">🎧 Fones</div>
 <div class="grid">
-  <div class="card" onclick="pedido('Fone com fio')">
+
+  <div class="card">
     <img src="imagens/fone-com-fio.jpg">
     <h3>Fone com fio</h3>
-    <button>Consultar valor</button>
+    <div class="botoes-container">
+      <button class="btn-small" onclick="addCarrinho('Fone com fio', this)">+ Adicionar</button>
+      <button class="btn-small btn-remover" onclick="removerCarrinho('Fone com fio', this)">- Remover</button>
+    </div>
   </div>
 
-  <div class="card" onclick="pedido('Fone Bluetooth')">
+  <div class="card">
     <img src="imagens/fone-bluetooth.jpg">
     <h3>Fone Bluetooth</h3>
-    <button>Consultar valor</button>
+    <div class="botoes-container">
+      <button class="btn-small" onclick="addCarrinho('Fone Bluetooth', this)">+ Adicionar</button>
+      <button class="btn-small btn-remover" onclick="removerCarrinho('Fone Bluetooth', this)">- Remover</button>
+    </div>
   </div>
+
 </div>
 
+<!-- CABOS -->
 <div class="section-title">🔌 Cabos</div>
 <div class="grid">
-  <div class="card" onclick="pedido('Cabo V8')">
+
+  <div class="card">
     <img src="imagens/cabo-v8.jpg">
     <h3>Cabo V8</h3>
-    <button>Consultar valor</button>
+    <div class="botoes-container">
+      <button class="btn-small" onclick="addCarrinho('Cabo V8', this)">+ Adicionar</button>
+      <button class="btn-small btn-remover" onclick="removerCarrinho('Cabo V8', this)">- Remover</button>
+    </div>
   </div>
 
-  <div class="card" onclick="pedido('Cabo Tipo C')">
+  <div class="card">
     <img src="imagens/cabo-tipo-c.jpg">
     <h3>Cabo Tipo C</h3>
-    <button>Consultar valor</button>
+    <div class="botoes-container">
+      <button class="btn-small" onclick="addCarrinho('Cabo Tipo C', this)">+ Adicionar</button>
+      <button class="btn-small btn-remover" onclick="removerCarrinho('Cabo Tipo C', this)">- Remover</button>
+    </div>
   </div>
 
-  <div class="card" onclick="pedido('Cabo iPhone')">
+  <div class="card">
     <img src="imagens/cabo-iphone.jpg">
     <h3>Cabo iPhone</h3>
-    <button>Consultar valor</button>
+    <div class="botoes-container">
+      <button class="btn-small" onclick="addCarrinho('Cabo iPhone', this)">+ Adicionar</button>
+      <button class="btn-small btn-remover" onclick="removerCarrinho('Cabo iPhone', this)">- Remover</button>
+    </div>
   </div>
+
 </div>
 
-<div class="section-title">🔋📺 Outros Produtos</div>
+<!-- OUTROS -->
+<div class="section-title">📺 Outros Produtos</div>
 <div class="grid">
-  <div class="card" onclick="pedido('Power Bank')">
+
+  <div class="card">
     <img src="imagens/power-bank.jpg">
     <h3>Power Bank</h3>
-    <button>Consultar valor</button>
+    <div class="botoes-container">
+      <button class="btn-small" onclick="addCarrinho('Power Bank', this)">+ Adicionar</button>
+      <button class="btn-small btn-remover" onclick="removerCarrinho('Power Bank', this)">- Remover</button>
+    </div>
   </div>
 
-  <div class="card" onclick="pedido('TV Box')">
+  <div class="card">
     <img src="imagens/tv-box.jpg">
     <h3>TV Box</h3>
-    <button>Consultar valor</button>
+    <div class="botoes-container">
+      <button class="btn-small" onclick="addCarrinho('TV Box', this)">+ Adicionar</button>
+      <button class="btn-small btn-remover" onclick="removerCarrinho('TV Box', this)">- Remover</button>
+    </div>
   </div>
 
-  <div class="card" onclick="pedido('Fire Stick')">
+  <div class="card">
     <img src="imagens/fire-stick.jpg">
     <h3>Fire Stick</h3>
-    <button>Consultar valor</button>
+    <div class="botoes-container">
+      <button class="btn-small" onclick="addCarrinho('Fire Stick', this)">+ Adicionar</button>
+      <button class="btn-small btn-remover" onclick="removerCarrinho('Fire Stick', this)">- Remover</button>
+    </div>
   </div>
+
 </div>
+
+<button class="finalizar-btn" onclick="finalizarPedido()">
+Finalizar Pedido
+</button>
 
 </div>
 
 <script>
 
-// WHATSAPP
-function pedido(produto){
-  let msg="Olá! Tenho interesse no produto:%0A%0A"+produto;
-  window.open("https://wa.me/5561983662523?text="+msg,"_blank");
+let carrinho = [];
+let contador = document.getElementById("contador");
+
+// Loader: esconder após carregar (pequeno delay para mostrar animação)
+window.addEventListener('load', function(){
+  setTimeout(function(){
+    const l = document.getElementById('loader');
+    if(l){
+      l.style.transition = 'opacity 600ms ease';
+      l.style.opacity = '0';
+      setTimeout(()=>{ l.style.display = 'none'; }, 650);
+    }
+  }, 3500);
+});
+
+function aumentar(btn){
+  let box = btn.parentElement;
+  let span = box.querySelector("span");
+  span.innerText = parseInt(span.innerText) + 1;
 }
 
-// LOADING
-window.addEventListener("load", function(){
-  const loader = document.getElementById("loader");
-  setTimeout(()=>{
-    loader.style.opacity="0";
-    loader.style.visibility="hidden";
-  },1200);
-});
+function diminuir(btn){
+  let box = btn.parentElement;
+  let span = box.querySelector("span");
+  if(parseInt(span.innerText) > 1){
+    span.innerText = parseInt(span.innerText) - 1;
+  }
+}
 
-// ANIMAÇÃO AO ROLAR
-const observer = new IntersectionObserver(entries=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){
-      entry.target.classList.add("show");
+function addCarrinho(produto, btn){
+  let card = btn.closest(".card");
+  let quantidade = 1;
+  
+  // Verificar se existe quantidade-box
+  let quantidadeBox = card.querySelector(".quantidade-box");
+  if(quantidadeBox){
+    quantidade = parseInt(quantidadeBox.querySelector("span").innerText);
+  }
+  
+  // Verificar se existe input (cor)
+  let inputCor = card.querySelector("input[type='text']");
+  if(inputCor && inputCor.value){
+    produto += " - " + inputCor.value;
+    inputCor.value = "";
+  }
+  
+  // Adicionar ao carrinho a quantidade especificada
+  for(let i = 0; i < quantidade; i++){
+    carrinho.push(produto);
+  }
+  
+  contador.innerText = carrinho.length;
+  
+  // Resetar quantidade para 1
+  if(quantidadeBox){
+    quantidadeBox.querySelector("span").innerText = "1";
+  }
+  
+  alert("Adicionado ao carrinho! Total: " + carrinho.length + " item(s)");
+}
+
+function removerCarrinho(produto, btn){
+  let index = -1;
+  for(let i = carrinho.length - 1; i >= 0; i--){
+    if(carrinho[i].startsWith(produto)){
+      index = i;
+      break;
     }
-  });
-});
+  }
+  
+  if(index > -1){
+    carrinho.splice(index, 1);
+    contador.innerText = carrinho.length;
+    alert("Removido do carrinho! Total: " + carrinho.length + " item(s)");
+  } else {
+    alert("Produto não encontrado no carrinho!");
+  }
+}
 
-document.querySelectorAll(".card, .section-title").forEach(el=>{
-  el.classList.add("fade-in");
-  observer.observe(el);
-});
+function enviarServico(servico, btn){
+  let card = btn.closest(".card");
+  let inputModelo = card.querySelector(".modelo-input");
+  
+  if(!inputModelo || !inputModelo.value){
+    alert("Por favor, digite o modelo do celular!");
+    return;
+  }
+  
+  let modelo = inputModelo.value;
+  let msg = "Olá! Tenho interesse em:%0A%0A" + servico + "%0AModelo: " + modelo;
+  window.open("https://wa.me/5561983662523?text=" + msg, "_blank");
+}
+
+function finalizarPedido(){
+  if(carrinho.length === 0){
+    alert("Seu carrinho está vazio!");
+    return;
+  }
+
+  let mensagem = "Olá! Gostaria de pedir:%0A%0A";
+  carrinho.forEach(item=>{
+    mensagem += "• " + item + "%0A";
+  });
+
+  window.open("https://wa.me/5561983662523?text="+mensagem,"_blank");
+  
+  carrinho = [];
+  contador.innerText = "0";
+}
+
+function pedido(servico){
+  let msg="Olá! Tenho interesse em:%0A%0A"+servico;
+  window.open("https://wa.me/5561983662523?text="+msg,"_blank");
+}
 
 </script>
 
 </body>
 </html>
-
 
