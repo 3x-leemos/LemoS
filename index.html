@@ -5,7 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#07090D">
 <title>LemoS Suporte</title>
-<link rel="icon" type="image/png" href="imagens/faviconf-16x16.png">
+<meta name="description" content="Assistência técnica, capinhas, películas e acessórios para o seu celular. Peça pelo WhatsApp.">
+<link rel="canonical" href="https://3x-leemos.github.io/LemoS/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="LemoS Suporte">
+<meta property="og:title" content="LemoS Suporte — Assistência técnica e acessórios para celular">
+<meta property="og:description" content="Troca de tela e bateria, capinhas, películas, fones, cabos e mais. Veja o estoque e peça pelo WhatsApp.">
+<meta property="og:url" content="https://3x-leemos.github.io/LemoS/">
+<meta property="og:image" content="https://3x-leemos.github.io/LemoS/imagens/og-capa.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="imagens/favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="imagens/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="imagens/faviconf-16x16.png">
+<link rel="apple-touch-icon" href="imagens/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -231,10 +246,11 @@ body.has-cart .fab{bottom:96px}
   <div class="login-box">
     <div class="lock"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="3"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
     <h2>Acesso do administrador</h2>
-    <p>Digite a senha para gerenciar o estoque.</p>
-    <div class="field"><label for="passwordInput">Senha</label><input type="password" id="passwordInput" placeholder="Sua senha"></div>
-    <button class="btn btn-primary" data-a="login">Entrar</button>
-    <div class="login-error" id="loginError" hidden>Senha incorreta. Tente novamente.</div>
+    <p>Entre com seu e-mail e senha para gerenciar o estoque.</p>
+    <div class="field"><label for="emailInput">E-mail</label><input type="email" id="emailInput" placeholder="voce@email.com" autocomplete="username" inputmode="email"></div>
+    <div class="field"><label for="passwordInput">Senha</label><input type="password" id="passwordInput" placeholder="Sua senha" autocomplete="current-password"></div>
+    <button class="btn btn-primary" id="loginBtn" data-a="login">Entrar</button>
+    <div class="login-error" id="loginError" role="alert" hidden></div>
     <button class="btn btn-ghost" data-a="loginClose" style="margin-top:10px">Voltar</button>
   </div>
 </div>
@@ -362,17 +378,20 @@ body.has-cart .fab{bottom:96px}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-// Mesmo banco de dados do estoque que já existia (nada é apagado ou alterado)
-const db = getFirestore(initializeApp({
+// Mesmo banco de dados do estoque que já existia (nada é apagado ou alterado).
+// A chave abaixo é pública por natureza; quem protege os dados são as regras do Firestore (firestore.rules).
+const app = initializeApp({
   apiKey: "AIzaSyBuYvhFFyLPpkIB_oktxmQ4DexNfau-XSQ",
   authDomain: "estoque-lemos.firebaseapp.com",
   projectId: "estoque-lemos",
   storageBucket: "estoque-lemos.firebasestorage.app",
   messagingSenderId: "119390092214",
   appId: "1:119390092214:web:8e26f7b45efba3fc815f17"
-}));
+});
+const db = getFirestore(app), auth = getAuth(app);
 const stockRef = doc(db, 'estoque', 'principal');
 const fotosCol = collection(db, 'fotos'); // um documento por capinha (id = id do item)
 
@@ -383,7 +402,6 @@ const ls = {
   set: (k, v) => { try { localStorage.setItem(k, v) } catch {} }
 };
 
-const ADMIN_PASSWORD = 'admin123';
 const MAX_PHOTOS = 8, PHOTO_MAX = 800, PHOTO_Q = .72, MAX_DOC_CHARS = 900000; // limite do Firestore: ~1MB por documento
 
 let items = [], fotos = {}, tab = 'Todos', term = '', admin = false, firstSnap = true;
@@ -430,7 +448,7 @@ const colorFor = name => {
 };
 
 // ====== UTILIDADES ======
-const money = n => (n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const money = n => (+n || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const waLink = text => `https://wa.me/55${wa}?text=${encodeURIComponent(text)}`;
 const updateHeroWa = () => $('heroWa').href = waLink('Olá! Vim pelo site da LemoS Suporte.');
@@ -450,15 +468,23 @@ const toast = msg => {
 };
 
 // ====== FIRESTORE ======
-const migrate = list => (list || []).map(i => i.colors ? i : {
-  id: i.id, tipo: i.tipo, aparelho: i.aparelho, qualidade: i.qualidade || '',
-  valor: i.valor || 0, colors: [{ nome: i.cor || '', quantidade: i.quantidade || 0 }]
-});
+// Aceita o formato antigo (uma cor por item) e normaliza os tipos: nada que vem do banco entra na página sem checagem
+const migrate = list => (Array.isArray(list) ? list : []).map(i => ({
+  id: String(i.id ?? ''),
+  tipo: i.tipo === 'Película' ? 'Película' : 'Capinha',
+  aparelho: String(i.aparelho ?? ''),
+  qualidade: String(i.qualidade ?? ''),
+  valor: Math.max(0, +i.valor || 0),
+  colors: (Array.isArray(i.colors) ? i.colors : [{ nome: i.cor, quantidade: i.quantidade }])
+    .map(c => ({ nome: String(c?.nome ?? ''), quantidade: Math.max(0, parseInt(c?.quantidade) || 0) }))
+}));
+
+const denied = e => e?.code === 'permission-denied';
 
 async function saveItems() {
   if (!admin) { toast('Apenas administradores podem salvar alterações'); return false }
   try { await setDoc(stockRef, { items }); return true }
-  catch { toast('Erro ao sincronizar. Tente novamente.'); return false }
+  catch (e) { toast(denied(e) ? 'Sem permissão para alterar o estoque. Entre como administrador.' : 'Erro ao sincronizar. Tente novamente.'); return false }
 }
 
 async function savePhotos(id, tipo, photos) {
@@ -466,7 +492,7 @@ async function savePhotos(id, tipo, photos) {
     if (tipo === 'Capinha' && photos.length) await setDoc(doc(db, 'fotos', id), { fotos: photos });
     else if (fotos[id]) await deleteDoc(doc(db, 'fotos', id));
     return true;
-  } catch (e) { console.warn(e); toast('Erro ao salvar as fotos. Verifique as regras do Firestore.'); return false }
+  } catch (e) { console.warn(e); toast(denied(e) ? 'Sem permissão para salvar as fotos. Entre como administrador.' : 'Erro ao salvar as fotos. Tente novamente.'); return false }
 }
 
 // ====== CARRINHO ======
@@ -733,16 +759,18 @@ async function saveItem() {
 
 async function deleteItem(id) {
   if (!admin || !confirm('Remover este modelo (e todas as suas cores) do estoque?')) return;
+  const before = items;
   items = items.filter(i => i.id !== id);
-  saveItems();
+  if (!await saveItems()) { items = before; return render() }   // sem permissão/erro: não finge que apagou
   if (fotos[id]) try { await deleteDoc(doc(db, 'fotos', id)) } catch (e) { console.warn(e) }
   render(); toast('Modelo removido');
 }
 
 async function resetAll() {
   if (!admin || !confirm('Isso vai apagar TODOS os modelos do estoque (e as fotos), para todos os dispositivos. Continuar?')) return;
-  const ids = Object.keys(fotos);
-  items = []; await saveItems();
+  const ids = Object.keys(fotos), before = items;
+  items = [];
+  if (!await saveItems()) { items = before; return render() }
   for (const id of ids) try { await deleteDoc(doc(db, 'fotos', id)) } catch (e) { console.warn(e) }
   render(); $('settingsOverlay').classList.remove('show'); toast('Estoque apagado');
 }
@@ -789,15 +817,26 @@ const A = {
   lb(ds) { const src = fotos[ds.id]?.[ds.n]; if (src) { $('lightboxImg').src = src; $('lightbox').classList.add('show') } },
   lbClose() { $('lightbox').classList.remove('show') },
   // admin
-  loginOpen() { $('loginOverlay').classList.add('show'); $('passwordInput').value = ''; $('loginError').hidden = true; $('passwordInput').focus() },
-  loginClose() { $('loginOverlay').classList.remove('show') },
-  login() {
-    const input = $('passwordInput');
-    if (input.value !== ADMIN_PASSWORD) { $('loginError').hidden = false; input.value = ''; return input.focus() }
-    $('loginOverlay').classList.remove('show'); input.value = '';
-    setAdmin(true); toast('Bem-vindo, Administrador!');
+  loginOpen() {
+    $('loginOverlay').classList.add('show'); $('passwordInput').value = ''; $('loginError').hidden = true;
+    ($('emailInput').value ? $('passwordInput') : $('emailInput')).focus();
   },
-  logout() { setAdmin(false); toast('Desconectado') },
+  loginClose() { $('loginOverlay').classList.remove('show') },
+  async login() {
+    const email = $('emailInput').value.trim(), pass = $('passwordInput').value, err = $('loginError'), btn = $('loginBtn');
+    const fail = msg => { err.textContent = msg; err.hidden = false; $('passwordInput').value = ''; $('passwordInput').focus() };
+    if (!email || !pass) return fail('Informe e-mail e senha.');
+    btn.disabled = true; err.hidden = true;
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);   // o painel admin liga em onAuthStateChanged
+      $('loginOverlay').classList.remove('show'); $('passwordInput').value = '';
+    } catch (e) {
+      fail(e.code === 'auth/too-many-requests' ? 'Muitas tentativas. Aguarde alguns minutos e tente de novo.'
+         : e.code === 'auth/network-request-failed' ? 'Sem conexão. Verifique a internet.'
+         : 'E-mail ou senha incorretos.');
+    } finally { btn.disabled = false }
+  },
+  logout() { signOut(auth).then(() => toast('Desconectado')) },
   settings() { $('whatsappNumber').value = wa; $('settingsOverlay').classList.add('show') },
   saveWa() {
     const n = $('whatsappNumber').value.trim();
@@ -819,12 +858,12 @@ document.addEventListener('click', e => {
   const el = e.target.closest('[data-a]');
   if (el) return A[el.dataset.a]?.(el.dataset, el);
   if (e.target.matches('.overlay,.login-overlay,.lightbox')) e.target.classList.remove('show');
-});
+ });
 
 document.addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
   if (e.target.matches('.svc-input')) e.target.nextElementSibling.click();
-  else if (e.target.id === 'passwordInput') A.login();
+  else if (e.target.id === 'passwordInput' || e.target.id === 'emailInput') A.login();
 });
 
 // Foto de produto que não existe: mostra um bloco neutro
@@ -878,9 +917,22 @@ onSnapshot(stockRef, snap => {
 
 onSnapshot(fotosCol, snap => {
   const fresh = {};
-  snap.forEach(d => { const arr = d.data().fotos; if (Array.isArray(arr) && arr.length) fresh[d.id] = arr });
+  snap.forEach(d => {  // só aceita imagens em data URL (evita injeção de HTML/links externos)
+    const arr = (d.data().fotos || []).filter(s => typeof s === 'string' && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(s));
+    if (arr.length) fresh[d.id] = arr;
+  });
   fotos = fresh; render();
 }, err => console.warn('Erro ao carregar fotos', err));
+
+// O painel só aparece para a conta de administrador. Estar logado não basta: o Firestore só deixa
+// ler o documento "admin/ping" para o e-mail definido em firestore.rules; qualquer outra conta é desconectada.
+let authReady = false;   // a primeira chamada é só a sessão restaurada ao abrir a página: sem boas-vindas
+onAuthStateChanged(auth, async user => {
+  const fresh = authReady; authReady = true;
+  if (!user) return setAdmin(false);
+  try { await getDoc(doc(db, 'admin', 'ping')); setAdmin(true); if (fresh) toast('Bem-vindo, Administrador!') }
+  catch { setAdmin(false); toast('Esta conta não é de administrador'); signOut(auth) }
+});
 </script>
 </body>
 </html>

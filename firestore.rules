@@ -1,0 +1,33 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Qualquer visitante pode LER o estoque e as fotos (a loja é pública).
+    // Só a SUA conta pode ESCREVER. Troque o e-mail abaixo pelo e-mail do administrador.
+    function isAdmin() {
+      return request.auth != null
+          && request.auth.token.email == 'lemostech@gmail.com';
+    }
+
+    match /estoque/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /fotos/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Documento "porteiro": o site tenta ler para saber se quem entrou é o administrador.
+    match /admin/{doc} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // Todo o resto fica fechado.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
