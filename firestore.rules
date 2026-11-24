@@ -6,7 +6,7 @@ service cloud.firestore {
     // Só a SUA conta pode ESCREVER. Troque o e-mail abaixo pelo e-mail do administrador.
     function isAdmin() {
       return request.auth != null
-          && request.auth.token.email == 'lemostech@gmail.com';
+          && request.auth.token.email == 'lemostech3x@gmail.com';
     }
 
     match /estoque/{doc} {
